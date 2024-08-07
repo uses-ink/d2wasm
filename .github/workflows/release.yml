@@ -35,7 +35,7 @@ jobs:
               run: |
                   brotli -q 11 -o dist/d2.wasm.br dist/d2.wasm
 
-            - name: Upload artifact
+            - name: Upload compressed artifact
               uses: actions/upload-artifact@v3
               with:
                   name: d2.wasm.br
@@ -49,6 +49,11 @@ jobs:
               uses: actions/download-artifact@v3
               with:
                   name: d2.wasm
+                  path: dist
+            - name: Download compressed artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: d2.wasm.br
                   path: dist
 
             - name: Create GitHub Release
