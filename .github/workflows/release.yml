@@ -27,7 +27,7 @@ jobs:
                   GOOS=js GOARCH=wasm go build -ldflags='-s -w' -trimpath -o dist/d2.wasm ./
 
             - name: Upload artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: d2.wasm
                   path: dist/d2.wasm
@@ -36,7 +36,7 @@ jobs:
                   brotli -q 11 -o dist/d2.wasm.br dist/d2.wasm
 
             - name: Upload compressed artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: d2.wasm.br
                   path: dist/d2.wasm.br
@@ -46,12 +46,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Download artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: d2.wasm
                   path: dist
             - name: Download compressed artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: d2.wasm.br
                   path: dist
