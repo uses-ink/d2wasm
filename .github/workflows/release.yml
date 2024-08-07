@@ -1,0 +1,63 @@
+name: Build and Release WASM
+
+on:
+    push:
+        tags:
+            - "v*.*.*" # Triggers the workflow on new tags following semantic versioning
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up Go
+              uses: actions/setup-go@v4
+              with:
+                  go-version: "1.20" # Specify your Go version
+
+            - name: Build WASM
+              run: |
+                  mkdir -p dist
+                  GOOS=js GOARCH=wasm go build -ldflags='-s -w' -trimpath -o dist/d2.wasm ./
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: d2.wasm
+                  path: dist/d2.wasm
+
+    release:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: d2.wasm
+                  path: dist
+
+            - name: Create GitHub Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: Release ${{ github.ref }}
+                  body: |
+                      This is the release for the tag ${{ github.ref }}.
+                  draft: false
+                  prerelease: false
+
+            - name: Upload Release Asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: dist/d2.wasm
+                  asset_name: d2.wasm
+                  asset_content_type: application/wasm

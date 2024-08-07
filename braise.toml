@@ -1,0 +1,4 @@
+#:schema https://raw.githubusercontent.com/cestef/braise/main/schema/braise.schema.json
+default = "build"
+[build]
+command = "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -trimpath -o {env(OUTPUT:d2.wasm)} ./"
