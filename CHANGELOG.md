@@ -1,3 +1,9 @@
+## v0.0.6 (2024-08-07)
+
+### Refactor
+
+- only keep renderSvg at the moment
+
 ## v0.0.5 (2024-08-07)
 
 ### Fix
