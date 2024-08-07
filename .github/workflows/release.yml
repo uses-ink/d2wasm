@@ -17,7 +17,10 @@ jobs:
               uses: actions/setup-go@v4
               with:
                   go-version: "1.22.5"
-
+            - name: Install brotli
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y brotli
             - name: Build WASM
               run: |
                   mkdir -p dist
@@ -28,6 +31,15 @@ jobs:
               with:
                   name: d2.wasm
                   path: dist/d2.wasm
+            - name: Compress using brotli
+              run: |
+                  brotli -q 11 -o dist/d2.wasm.br dist/d2.wasm
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: d2.wasm.br
+                  path: dist/d2.wasm.br
 
     release:
         needs: build
@@ -60,4 +72,13 @@ jobs:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
                   asset_path: dist/d2.wasm
                   asset_name: d2.wasm
+                  asset_content_type: application/wasm
+            - name: Upload Release Asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: dist/d2.wasm.br
+                  asset_name: d2.wasm.br
                   asset_content_type: application/wasm
