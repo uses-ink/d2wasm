@@ -4,7 +4,7 @@ go 1.22.5
 
 require (
 	oss.terrastruct.com/d2 v0.6.6
-	oss.terrastruct.com/util-go v0.0.0-20231101220827-55b3812542c2
+	oss.terrastruct.com/util-go v0.0.0-20250213174338-243d8661088a
 )
 
 require (
